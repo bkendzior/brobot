@@ -6,9 +6,11 @@ import (
 	"flag"
 	"github.com/mattn/go-xmpp"
 	"github.com/mattn/go-iconv"
+  "net/http"
 	"log"
 	"os"
 	"strings"
+  "io/ioutil"
 )
 
 // Hipchat Default 
@@ -68,9 +70,28 @@ func main() {
         if chat, ok := msg.(xmpp.Chat); ok {
           if chat.Text == "" {
             fmt.Println(chat.Remote +" is typing...")    
-          } else if chat.Text == "chuck" {
+          } else if strings.Contains(chat.Text, "chuck")  {
             fmt.Println("Chuck Norris is prepping a fact")    
-            talk.Send(xmpp.Chat{Remote: chat.Remote, Type: "chat", Text: toUTF8("dunce")})
+
+            resp, err := http.Get("http://api.icndb.com/jokes/random")
+
+            if err != nil {
+              return
+            }
+
+            test, err1 := ioutil.ReadAll(resp.Body)
+
+            if err1 != nil {
+              return
+            }
+
+            talk.Send(xmpp.Chat{Remote: chat.Remote, Type: "chat", Text: string(test)})
+
+            err2 := resp.Body.Close()
+
+            if err2 != nil {
+              return
+            }
           } else {
             fmt.Println(chat)
           }
