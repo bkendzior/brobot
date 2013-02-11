@@ -1,4 +1,4 @@
-package main
+package brobot
 
 import (
 	"bufio"
@@ -6,11 +6,12 @@ import (
 	"flag"
 	"github.com/mattn/go-xmpp"
 	"github.com/mattn/go-iconv"
-  "net/http"
+	"net/http"
 	"log"
 	"os"
 	"strings"
-  "io/ioutil"
+	"io/ioutil"
+	"path/filepath"
 )
 
 // Hipchat Default 
@@ -40,7 +41,24 @@ func toUTF8(s string) string {
 	return ret
 }
 
+func visit(path string, f os.FileInfo, err error) error {
+	fmt.Printf("Visited: %s\n", path)
+	return nil
+} 
+
 func main() {
+
+	// Will scan ./plugins folder for individual implementations of the brobot_plugin interface
+	//
+	flag.Parse()
+	root := "./plugins"
+	err := filepath.Walk(root, visit)
+	fmt.Printf("filepath.Walk( ) returned %v\n", err)
+	//
+	//
+	//
+	//
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "usage: example [options]\n")
 		flag.PrintDefaults()
