@@ -1,4 +1,4 @@
-brobot
+brobot the xmpp gobot
 ======
 
 A XMPP chat-bot in Golang
